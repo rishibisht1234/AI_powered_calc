@@ -1,0 +1,3 @@
+.main/streamlit/secrets.toml
+.env
+__pycache__/
