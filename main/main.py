@@ -4,6 +4,8 @@ from PIL import Image
 import google.generativeai as genai
 import io
 import fun
+import time
+import random
 # Page config
 # login_reguster page 
 fun.login_register_page()
@@ -162,7 +164,21 @@ if st.session_state['authentication_status']:
                         except Exception as e:
                             response_text = f"❌ Error: {str(e)}"
                         
-                        st.markdown(response_text)
+                        reply = response.text
+    
+                        # st.write(reply)
+                        placeholder = st.empty()
+
+                        # Word-by-word display
+                        display_text = ""
+                        for word in reply.split():
+                            display_text += word + " "
+                            placeholder.markdown(
+            f"<div style='white-space:pre-wrap;font-family:system-ui;'>{display_text}▌</div>",
+            unsafe_allow_html=True
+        )
+                            time.sleep(random.uniform(0.0001,0.01))  # Adjust speed here
+                        placeholder.markdown(reply, unsafe_allow_html=True)
                 
                 # Add assistant response to chat history
                 st.session_state.messages.append({"role": "assistant", "content": response_text})
