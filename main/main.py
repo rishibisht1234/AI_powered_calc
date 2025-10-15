@@ -166,21 +166,10 @@ if st.session_state['authentication_status']:
                             if "429" in error_msg or "quota" in error_msg.lower():
                                 st.error("❌ You've hit the **Gemini API quota limit** for today. Please wait or use another API key.")
                                                 
-                        reply = response_text
-    
-                        # st.write(reply)
-                        placeholder = st.empty()
-
-                        # Word-by-word display
-                        display_text = ""
-                        for word in reply.split():
-                            display_text += word + " "
-                            placeholder.markdown(
-            f"<div style='white-space:pre-wrap;font-family:system-ui;'>{display_text}▌</div>",
-            unsafe_allow_html=True
-        )
-                            time.sleep(random.uniform(0.005,0.01))  # Adjust speed here
-                        placeholder.markdown(reply, unsafe_allow_html=True)
+                        
+                            
+                        
+                        st.markdown(response_text, unsafe_allow_html=True)
                 
                 # Add assistant response to chat history
                 st.session_state.messages.append({"role": "assistant", "content": response_text})
