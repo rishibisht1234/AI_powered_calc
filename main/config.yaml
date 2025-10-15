@@ -1,0 +1,26 @@
+cookie:
+  expiry_days: 30
+  key: some_random_key
+  name: some_random_name
+credentials:
+  usernames:
+    ekam:
+      email: ekam@ekam.com
+      first_name: ekam
+      last_name: singh
+      logged_in: false
+      password: $2b$12$JdNfA.oye0LfeQj75ajV2ub06LtbEmO2uy6yvPnpX86aZKCChCzqW
+      roles: null
+    musu:
+      email: musu@musu.com
+      first_name: musu
+      last_name: bisht
+      logged_in: false
+      password: $2b$12$saebS5amFQ6LSUIMLi.38OUtZcEWsi4a6DgQmw8n/vZGqn0LdXoe6
+      roles: null
+    rishi:
+      email: rishi@gmail.com
+      failed_login_attempts: 0
+      first_name: rishi
+      last_name: bisht
+      password: $2b$12$ZuieXzIg/3BtJaSs6WR94.Ae0ALIQ/Xu/os.cqjLHTMdVfMOu/GyS
