@@ -38,19 +38,24 @@ def login_register_page():
         
 
         if not st.session_state['show_register']:
-            authenticator.login()
-            
+            try:    
+                authenticator.login()
+            except Exception as e:
+                st.error(str(e))
             
         if st.session_state['show_register']==True:
-            email,username,name=authenticator.register_user(password_hint=False,captcha=False)
-            if email and username and name:
-                st.write('successfully registered',name)
-                
-                
-                with open('main/config.yaml','w') as file:
-                    yaml.dump(config,file,default_flow_style=False)
-                st.session_state['show_register']=False
-                st.rerun()
+            try:
+                email,username,name=authenticator.register_user(password_hint=False,captcha=False)
+                if email and username and name:
+                    st.write('successfully registered',name)
+                    
+                    
+                    with open('main/config.yaml','w') as file:
+                        yaml.dump(config,file,default_flow_style=False)
+                    st.session_state['show_register']=False
+                    st.rerun()
+            except Exception as e:
+                st.error(str(e))
 
     else:
         
