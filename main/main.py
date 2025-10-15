@@ -162,8 +162,10 @@ if st.session_state['authentication_status']:
                             else:
                                 response_text = "❌ Could not initialize chat session. Please check your API key."
                         except Exception as e:
-                            response_text = f"❌ Error: {str(e)}"
-                        
+                            error_msg = str(e)
+                            if "429" in error_msg or "quota" in error_msg.lower():
+                                st.error("❌ You've hit the **Gemini API quota limit** for today. Please wait or use another API key.")
+                                                
                         reply = response_text
     
                         # st.write(reply)
