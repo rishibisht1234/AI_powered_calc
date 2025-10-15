@@ -39,7 +39,10 @@ def login_register_page():
 
         if not st.session_state['show_register']:
             try:    
-                authenticator.login()
+                
+                if not authenticator.login():
+                    st.error('invalid credentials')
+                
             except Exception as e:
                 st.error(str(e))
             
