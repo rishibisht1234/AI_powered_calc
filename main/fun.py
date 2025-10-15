@@ -19,11 +19,9 @@ def login_register_page():
     
 
     # flag for register and login form
-    if 'show_register' not in st.session_state:
-        st.session_state['show_register']=False
-
-    if 'authentication_status' not in st.session_state:
-        st.session_state['authentication_status'] = None
+    for key in ['authentication_status', 'username', 'name', 'logout', 'show_register']:
+        if key not in st.session_state:
+            st.session_state[key] = None if key == 'authentication_status' else ""
 
 
 
