@@ -47,7 +47,7 @@ def login_register_page():
                 st.write('successfully registered',name)
                 
                 
-                with open('app/config.yaml','w') as file:
+                with open('main/config.yaml','w') as file:
                     yaml.dump(config,file,default_flow_style=False)
                 st.session_state['show_register']=False
                 st.rerun()
