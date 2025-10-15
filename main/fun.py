@@ -17,48 +17,51 @@ authenticator = stauth.Authenticate(
 
 def login_register_page():
     
+
     # flag for register and login form
     for key in ['authentication_status', 'username', 'name', 'logout', 'show_register']:
         if key not in st.session_state:
             st.session_state[key] = None if key == 'authentication_status' else ""
 
+
+
     if not st.session_state['authentication_status']:
 
+        # st.session_state['show_register']=False
         with st.sidebar:
-            if st.button('Login'):
-                st.session_state['show_register'] = False
-                st.rerun() # Use rerun for a cleaner state switch
-            if st.button('Register'):
-                st.session_state['show_register'] = True
-                st.rerun() # Use rerun for a cleaner state switch
+            if st.button('login'):
+                st.session_state['show_register']=False
+            if st.button('register'):
+                st.session_state['show_register']=True
         
+        
+        
+
         if not st.session_state['show_register']:
-            authenticator.login()
+            try:    
+                authenticator.login() 
+                
+                if st.session_state["authentication_status"] is False:
+                    st.error('Username/password is incorrect')               
+            except Exception as e:
+                st.error(str(e))
             
-            # --- NEW CODE START ---
-            # Check the authentication status after the login attempt.
-            # It will be False if the credentials are wrong.
-            if st.session_state["authentication_status"] is False:
-                st.error('Username/password is incorrect')
-            # --- NEW CODE END ---
-            
-        if st.session_state['show_register'] == True:
+        if st.session_state['show_register']==True:
             try:
-                email, username, name = authenticator.register_user(pre_authorization=False)
+                email,username,name=authenticator.register_user(password_hint=False,captcha=False)
                 if email and username and name:
-                    st.success('User registered successfully')
+                    st.write('successfully registered',name)
                     
-                    # Save the new user to the config file
-                    with open('main/config.yaml', 'w') as file:
-                        yaml.dump(config, file, default_flow_style=False)
                     
-                    st.session_state['show_register'] = False
+                    with open('main/config.yaml','w') as file:
+                        yaml.dump(config,file,default_flow_style=False)
+                    st.session_state['show_register']=False
                     st.rerun()
             except Exception as e:
-                st.error(e)
+                st.error(str(e))
 
     else:
+        
         with st.sidebar:
-            # Display the user's first name, not the username
-            st.write(f"Welcome {st.session_state['name']}")
+            st.write(f"welcome {config['credentials']['usernames'][st.session_state['username']]['first_name']}")
             authenticator.logout()
