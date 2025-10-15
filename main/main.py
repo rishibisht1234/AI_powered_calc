@@ -177,7 +177,7 @@ if st.session_state['authentication_status']:
             f"<div style='white-space:pre-wrap;font-family:system-ui;'>{display_text}▌</div>",
             unsafe_allow_html=True
         )
-                            time.sleep(random.uniform(0.0001,0.01))  # Adjust speed here
+                            time.sleep(random.uniform(0.005,0.01))  # Adjust speed here
                         placeholder.markdown(reply, unsafe_allow_html=True)
                 
                 # Add assistant response to chat history
