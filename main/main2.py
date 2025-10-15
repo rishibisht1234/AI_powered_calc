@@ -48,10 +48,18 @@ h1 {
 }
 /* Sidebar background */
 [data-testid="stSidebar"] {
-    background-color: #141424;  /* Darker Sidebar */
+    background-color: #1A1A3D;  /* Dark Navy */
 }
 
 /* --- TEXT COLOR STYLES --- */
+
+/* General text color for the main app body */
+[data-testid="stAppViewContainer"] p, 
+[data-testid="stAppViewContainer"] li,
+[data-testid="stAppViewContainer"] .st-emotion-cache-12w0qpk e1nzilvr5 {
+    color: #C0C0FF !important; /* Light Lavender */
+}
+
 /* General text color for sidebar (instructions, etc.) */
 [data-testid="stSidebar"] p, 
 [data-testid="stSidebar"] li {
@@ -66,7 +74,18 @@ label, .st-emotion-cache-1q8dd3e {
     color: #C0C0FF !important;
 }
 
-/* --- CHANGED: Specific and robust fix for the checkbox label color --- */
+/* Specific fix for st.metric label color */
+div[data-testid="stMetricLabel"] > div {
+    color: #C0C0FF !important;
+}
+
+/* --- THIS IS THE NEW RULE --- */
+/* Specific fix for st.metric value color */
+div[data-testid="stMetricValue"] {
+    color: #FFFFFF !important; /* White */
+}
+
+/* Specific and robust fix for the checkbox label color */
 label[data-baseweb="checkbox"] > div:last-child {
     color: #C0C0FF !important;
 }
@@ -124,7 +143,7 @@ if st.session_state['authentication_status']:
         st.header("📋 Mode")
         mode = st.radio(
             "Choose input mode:",
-            ["✏️ Draw", "📤 Upload Image", "💬 Chat", "🎯 Quiz"],
+            ["✏️ Draw", "📤 Upload Image", "💬 Chat", "🎯 Quiz", "🔮 Classifier"],
             label_visibility="collapsed"
         )
 
@@ -142,6 +161,8 @@ if st.session_state['authentication_status']:
             st.markdown("1. Upload an image\n2. Click 'Solve'\n3. Get the solution!")
         elif mode == "🎯 Quiz":
             st.markdown("1. Select a topic\n2. Start the quiz\n3. Test your knowledge!")
+        elif mode == "🔮 Classifier":
+            st.markdown("1. Type a problem\n2. Click 'Analyze'\n3. Get its difficulty!")
         else: # Chat mode
             st.markdown("1. Type a question\n2. Get explanations\n3. Chat about math!")
         
@@ -279,6 +300,56 @@ if st.session_state['authentication_status']:
                     st.markdown(response_text)
                 st.session_state.messages.append({"role": "assistant", "content": response_text})
 
+    elif mode == "🔮 Classifier":
+        st.subheader("🔮 Problem Difficulty Classifier")
+        st.markdown("<p style='color:#C0C0FF'>Paste a math problem below to analyze its difficulty and the concepts required to solve it.</p>", unsafe_allow_html=True)
+        problem_text = st.text_area("Enter math problem here:", height=150, placeholder="e.g., Find the integral of x^2 from 0 to 1.")
+
+        if st.button("🔬 Analyze Problem", use_container_width=True, type="primary"):
+            if not api_key:
+                st.error("⚠️ Please provide your Gemini API key!")
+            elif not problem_text.strip():
+                st.warning("⚠️ Please enter a math problem to analyze.")
+            else:
+                model, error = get_gemini_model(api_key, model_name='gemini-2.0-flash-exp')
+                if error:
+                    st.error(f"Error initializing model: {error}")
+                else:
+                    prompt = f"""
+                    Analyze the following math problem. Classify its difficulty into one of four categories: Easy, Medium, Hard, or Advanced. 
+                    Also, list the key mathematical concepts required to solve it. 
+
+                    Problem: '{problem_text}'
+
+                    Return a single, valid JSON object with two keys: "difficulty" (a string from the categories) and "required_concepts" (a list of strings). 
+                    Do not include any text, explanation, or markdown formatting before or after the JSON object.
+                    """
+                    
+                    with st.spinner("Analyzing problem complexity..."):
+                        try:
+                            response = model.generate_content(prompt)
+                            json_text = response.text.strip().replace("```json", "").replace("```", "")
+                            result = json.loads(json_text)
+
+                            difficulty = result.get('difficulty', "N/A")
+                            concepts = result.get('required_concepts', [])
+
+                            st.markdown("### Analysis Result")
+                            st.metric(label="Predicted Difficulty", value=difficulty)
+                            
+                            st.markdown("#### Key Concepts Required:")
+                            if concepts:
+                                for concept in concepts:
+                                    st.markdown(f"- {concept}")
+                            else:
+                                st.markdown("No concepts identified.")
+
+                        except json.JSONDecodeError:
+                            st.error("❌ The model returned an invalid format. Could not parse the analysis.")
+                            st.text_area("Model's Raw Response:", response.text if 'response' in locals() else "No response generated.")
+                        except Exception as e:
+                            st.error(f"❌ An error occurred during analysis. Error: {e}")
+
     else: # Draw or Upload Mode
         if mode == "✏️ Draw":
             st.subheader("📐 Draw Your Expression")
@@ -307,7 +378,7 @@ if st.session_state['authentication_status']:
                     stroke_color=final_stroke_color,
                     background_color=bg_color,
                     height=605,
-                    width=1000,
+                    width=1200,
                     drawing_mode=final_drawing_tool,
                     display_toolbar=False,
                     key=f"canvas_{st.session_state.canvas_clear_key}"
