@@ -22,8 +22,8 @@ def login_register_page():
     if 'show_register' not in st.session_state:
         st.session_state['show_register']=False
 
-    # if 'authentication_status' not in st.session_state:
-    #     st.session_state['authentication_status'] = None
+    if 'authentication_status' not in st.session_state:
+        st.session_state['authentication_status'] = None
 
 
 
