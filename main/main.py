@@ -152,6 +152,7 @@ if st.session_state['authentication_status']:
                 # Get AI response
                 with st.chat_message("assistant"):
                     with st.spinner("Thinking..."):
+                        response_text=''
                         try:
                             chat = get_chat_session(api_key)
                             if chat:
