@@ -3,7 +3,7 @@ from streamlit_drawable_canvas import st_canvas
 from PIL import Image
 import google.generativeai as genai
 import io
-from main import fun
+import fun
 # Page config
 # login_reguster page 
 fun.login_register_page()
