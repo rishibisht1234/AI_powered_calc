@@ -164,7 +164,7 @@ if st.session_state['authentication_status']:
                         except Exception as e:
                             response_text = f"❌ Error: {str(e)}"
                         
-                        reply = response.text
+                        reply = response_text
     
                         # st.write(reply)
                         placeholder = st.empty()
